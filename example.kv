@@ -1,0 +1,51 @@
+<Main>
+GridLayout:
+    pos: root.pos
+    size: root.size
+    cols: 3
+    spacing: 100
+    padding: 50
+
+    SpeedMeter:
+        id: toto
+        min: 0
+        startAngle: -120
+        endAngle: 120
+        subtick: 5
+        label: 'Km/h'
+
+    SpeedMeter:
+        min: 0
+        max: 12
+        tick: 1
+        displayFirst: False
+        startAngle: 0
+        endAngle: 0
+        subtick: 5
+
+    SpeedMeter:
+        min: 0
+        startAngle: 150
+        endAngle: 20
+        tick: 20
+
+    SpeedMeter:
+        min: 35
+        max: 43
+        tick: 1
+        startAngle: 90
+        endAngle: 270
+
+    SpeedMeter:
+        min: 0
+        max: 8
+        tick: 1
+        startAngle: -120
+        endAngle: 120
+        subtick: 4
+        label: 'rpm'
+
+    SpeedMeter:
+        min: 0
+        startAngle: -140
+        endAngle: 90
