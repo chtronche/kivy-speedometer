@@ -3,18 +3,18 @@ GridLayout:
     pos: root.pos
     size: root.size
     cols: 3
-    spacing: 100
-    padding: 50
+    padding: 25
 
     SpeedMeter:
-        id: toto
-        min: 0
+        id: speed
         startAngle: -120
         endAngle: 120
         subtick: 5
         label: 'Km/h'
+        value: speed_value.value
 
     SpeedMeter:
+        id: clock
         min: 0
         max: 12
         tick: 1
@@ -24,12 +24,24 @@ GridLayout:
         subtick: 5
 
     SpeedMeter:
-        min: 0
+        id: fuel
         startAngle: 150
         endAngle: 20
-        tick: 20
+        max: 4
+        tick: 1
+
+    Slider:
+        id: speed_value
+
+    Slider:
+        value: clock.value
+        max: 12
+
+    Switch:
+        id: switch
 
     SpeedMeter:
+        id: temperature
         min: 35
         max: 43
         tick: 1
@@ -37,7 +49,7 @@ GridLayout:
         endAngle: 270
 
     SpeedMeter:
-        min: 0
+        id: rpm
         max: 8
         tick: 1
         startAngle: -120
@@ -46,6 +58,7 @@ GridLayout:
         label: 'rpm'
 
     SpeedMeter:
+        id: pi
         min: 0
-        startAngle: -140
+        startAngle: -150
         endAngle: 90
