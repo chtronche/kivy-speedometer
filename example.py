@@ -4,6 +4,10 @@ from kivy.lang import Builder
 
 from speedmeter import SpeedMeter
 
+class NoValueSpeedMeter(SpeedMeter):
+
+    def valueStr(self, n): return ''
+
 class SpeedMeterExample(App):
 
     def tick(self, *t, **kw):

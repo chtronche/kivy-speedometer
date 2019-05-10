@@ -1,4 +1,6 @@
-<Main>
+<SpeedMeter>:
+    label: 'Toto'
+
 GridLayout:
     pos: root.pos
     size: root.size
@@ -13,6 +15,7 @@ GridLayout:
         subtick: 5
         label: 'Km/h'
         value: speed_value.value
+        color: 1, 1, 0
 
     SpeedMeter:
         id: clock
@@ -24,12 +27,15 @@ GridLayout:
         endAngle: 0
         subtick: 5
 
-    SpeedMeter:
+    NoValueSpeedMeter:
         id: fuel
         startAngle: 150
         endAngle: 20
         max: 4
         tick: 1
+        labelRadiusRatio: 0.4
+        labelIcon: 'fuel.ico'
+        sectors: (0, (1, 0, 0), 1)
 
     Slider:
         id: speed_value
@@ -48,6 +54,10 @@ GridLayout:
         tick: 1
         startAngle: 90
         endAngle: 270
+        labelIcon: 'temp.ico'
+        labelIconScale: 0.35
+        labelRadiusRatio: 0.35
+        sectors: [35, (0,0,1), 40, (1, 1, 0), 42, (1, 0, 0), 43]
 
     SpeedMeter:
         id: rpm
@@ -57,6 +67,7 @@ GridLayout:
         endAngle: 120
         subtick: 4
         label: 'rpm'
+        sectors: [0, (0, 0, 0), 6, (1, 1, 0), 7, (1, 0, 0), 8]
 
     SpeedMeter:
         id: pi
