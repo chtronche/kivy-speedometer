@@ -1,6 +1,5 @@
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.lang import Builder
 
 from speedmeter import SpeedMeter
 

@@ -15,7 +15,9 @@ GridLayout:
         subtick: 5
         label: 'Km/h'
         value: speed_value.value
-        color: 1, 1, 0
+        cadranColor: '#0f0f0f'
+        sectors: (0, '#ffffff')
+        labelRadiusRatio: -0.3
 
     SpeedMeter:
         id: clock
@@ -34,8 +36,9 @@ GridLayout:
         max: 4
         tick: 1
         labelRadiusRatio: 0.4
-        labelIcon: 'fuel.ico'
-        sectors: (0, (1, 0, 0), 1)
+        labelIcon: 'fuel.png'
+        sectors: (0, '#ff0000', 1)
+        needleColor: '#ffff00'
 
     Slider:
         id: speed_value
@@ -54,10 +57,11 @@ GridLayout:
         tick: 1
         startAngle: 90
         endAngle: 270
-        labelIcon: 'temp.ico'
+        labelIcon: 'temp.png'
         labelIconScale: 0.35
         labelRadiusRatio: 0.35
-        sectors: [35, (0,0,1), 40, (1, 1, 0), 42, (1, 0, 0), 43]
+        cadranColor: '#000000'
+        sectors: [35, '#0000ff', 40, '#ffff00', 42, '#ff0000', 43]
 
     SpeedMeter:
         id: rpm
@@ -67,14 +71,10 @@ GridLayout:
         endAngle: 120
         subtick: 4
         label: 'rpm'
-        sectors: [0, (0, 0, 0), 6, (1, 1, 0), 7, (1, 0, 0), 8]
+        sectors: [0, '#000000', 6, '#ffff00', 7, '#ff0000', 8]
 
     SpeedMeter:
         id: pi
         min: 0
         startAngle: -150
         endAngle: 90
-
-    SpeedMeter:
-        id: default
-        label: 'default'
