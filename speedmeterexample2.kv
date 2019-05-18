@@ -35,9 +35,10 @@ BoxLayout:
         Slider:
             min: sm.min
             max: sm.max
-            on_value: sm.value = self.value
+            value: sm.value
             value_track: True
             size_hint: 1, None
+            on_value: sm.value = self.value
 
     GridLayout:
         size_hint: 0.5, 1
