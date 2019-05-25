@@ -1,6 +1,6 @@
 from kivy.config import Config
 Config.set('graphics', 'width', 1000)
-Config.set('graphics', 'height', 600)
+Config.set('graphics', 'height', 650)
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 from kivy.app import App
@@ -38,5 +38,13 @@ class SpeedMeterExample2(App):
             self.colorPicker = Factory.ColorPickerDialog()
             self.colorPicker._exampleCallback = self._setVectorColor
             self.colorPicker.open()
+
+    def setLabelControlState(self):
+        w = self.root.ids
+        w['labelIconScale'].disabled = not self.sm.labelIcon
+        sm = self.sm
+        disabled = not sm.label and not sm.labelIcon
+        w['labelRadiusRatio'].disabled = disabled
+        w['labelAngleRatio'].disabled = disabled
 
 SpeedMeterExample2().run()

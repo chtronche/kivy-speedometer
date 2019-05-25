@@ -18,7 +18,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
 _redraw = 'pos size min max tick subtick cadranColor displayFirst displayLast sectors'.split()
-_redrawLabel = 'label labelRadiusRatio labelIcon labelIconScale'.split()
+_redrawLabel = 'label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'.split()
 
 from kivy.graphics.instructions import *
 
@@ -53,7 +53,7 @@ class SpeedMeter(Widget):
     labelIconScale = NumericProperty(0.5, min=0, max=1)
 
     labelRadiusRatio = NumericProperty(0.3, min=-1, max=1)
-    labelAngleRatio = NumericProperty(0.5)
+    labelAngleRatio = NumericProperty(0.5, min=0, max=1)
 
     needleColor = StringProperty('#6bf2ff')
     needleImage = StringProperty('needle.png')
