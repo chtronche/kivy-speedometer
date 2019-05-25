@@ -25,6 +25,10 @@ BoxLayout:
             Label:
                 text: 'Click on cadran to set value.\nRight-click to add color sectors.'
 
+            Button:
+                text: 'reset sectors'
+                on_release: sm.sectors = []
+
         SpeedMeter:
             id: sm
             startAngle: startAngle.value
@@ -193,7 +197,7 @@ BoxLayout:
             value: 0.5
             disabled: True
         Label:
-            text: str(sm.labelIconScale)
+            text: '%.3f' % sm.labelIconScale
 
 <ColorPickerDialog@ModalView>:
     id: colorpickerdialog

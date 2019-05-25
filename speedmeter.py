@@ -4,7 +4,6 @@
 # MIT License (see MIT-LICENSE.TXT file, basically no warranty of any kind,
 # use it as you want for any purpose, commercial or not)
 # Copyright Ch. Tronche 2019, ch@tronche.com
-#
 
 import sys
 
