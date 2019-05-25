@@ -15,6 +15,21 @@ BoxLayout:
         orientation: 'vertical'
         size_hint: 0.5, 1
 
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.2
+
+            Label:
+                text: 'Click on cadran to set value.\nRight-click to add color sector.'
+                size_hint: 1, None
+            Button:
+                size_hint: None, None
+                height: sp(30)
+                text: 'reset sectors'
+                on_release:
+                    print type(sm.sectors)
+                    sm.sectors = []
+
         SpeedMeter:
             id: sm
             startAngle: startAngle.value
@@ -28,16 +43,20 @@ BoxLayout:
             on_value: display.text = str(self.value)
 
         Label:
+            text: 'Value:'
+            size_hint: 1, 0.1
+
+        Label:
             id: display
             text: '0'
-            size_hint: 1, None
+            size_hint: 1, 0.1
 
         Slider:
+            size_hint: 1, 0.1
             min: sm.min
             max: sm.max
             value: sm.value
             value_track: True
-            size_hint: 1, None
             on_value: sm.value = self.value
 
     GridLayout:
@@ -119,7 +138,7 @@ BoxLayout:
             text: 'select color'
             on_release:
                 dialog = Factory.ColorPickerDialog()
-                dialog.ids['colorpicker'].hex_color = sm.cadranColor
+                dialog._exampleCallback = app._setCadranColor
                 dialog.open()
 
         Label:
@@ -173,7 +192,7 @@ BoxLayout:
                 size_hint: None, None
                 height: sp(30)
                 on_release:
-                    app.root.ids['sm'].cadranColor = colorpicker.hex_color
+                    colorpickerdialog._exampleCallback(colorpicker.hex_color)
                     colorpickerdialog.dismiss()
             Button:
                 text: 'cancel'
@@ -210,4 +229,3 @@ BoxLayout:
                 on_release:
                     app.root.ids['sm'].labelIcon = ''
                     filechooserdialog.dismiss()
-

@@ -17,7 +17,7 @@ from kivy.uix.image import CoreImage, Image
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
-_redraw = 'pos size min max tick subtick cadranColor displayFirst displayLast'.split()
+_redraw = 'pos size min max tick subtick cadranColor displayFirst displayLast sectors'.split()
 _redrawLabel = 'label labelRadiusRatio labelIcon labelIconScale'.split()
 
 from kivy.graphics.instructions import *
