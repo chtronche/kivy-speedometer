@@ -16,7 +16,8 @@ BoxLayout:
 
     BoxLayout:
         orientation: 'vertical'
-        size_hint: 0.4, 1
+        size_hint: 0.4, None
+        height: root.height
 
         BoxLayout:
             orientation: 'horizontal'
@@ -27,7 +28,9 @@ BoxLayout:
 
             Button:
                 text: 'reset sectors'
-                on_release: sm.sectors = []
+                on_release:
+                    sm.sectors = []
+                    sectorWidth.disabled = True            
 
         SpeedMeter:
             id: sm
@@ -39,6 +42,7 @@ BoxLayout:
             labelRadiusRatio: labelRadiusRatio.value
             labelAngleRatio: labelAngleRatio.value
             labelIconScale: labelIconScale.value
+            sectorWidth: sectorWidth.value
 
             on_value: display.text = str(self.value)
 
@@ -198,6 +202,18 @@ BoxLayout:
             disabled: True
         Label:
             text: '%.3f' % sm.labelIconScale
+
+        Label:
+            text: 'sectorWidth (0 or int)'
+        Slider:
+            id: sectorWidth
+            min: 0
+            max: 30
+            value: 0
+            step: 1
+            disabled: True
+        Label:
+            text: str(int(sm.sectorWidth))
 
 <ColorPickerDialog@ModalView>:
     id: colorpickerdialog

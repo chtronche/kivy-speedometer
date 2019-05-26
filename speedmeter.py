@@ -16,7 +16,7 @@ from kivy.uix.image import CoreImage, Image
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
-_redraw = 'pos size min max tick subtick cadranColor displayFirst displayLast sectors'.split()
+_redraw = 'pos size min max tick subtick cadranColor displayFirst displayLast sectors sectorWidth'.split()
 _redrawLabel = 'label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'.split()
 
 from kivy.graphics.instructions import *
@@ -58,6 +58,7 @@ class SpeedMeter(Widget):
     needleImage = StringProperty('needle.png')
 
     sectors = ListProperty()
+    sectorWidth = NumericProperty(0, min=0)
 
     value = NumericProperty(0)
 
@@ -85,12 +86,23 @@ class SpeedMeter(Widget):
         b = self.b
         v0 = l.pop(0)
         a0 = -(a * v0 + b)
+        sw = self.sectorWidth
+        if sw:
+            r -= sw
+        else:
+            centerx -= r
+            centery -= r
+            dd = (d, d)
+
         while l:
             color = l.pop(0)
             v1 = l.pop(0) if l else self.max
             a1 = -(a * v1 + b)
             Color(rgba=get_color_from_hex(color))
-            Ellipse(pos=(centerx-r, centery-r), size=(d, d), angle_start=a0, angle_end=a1)
+            if sw:
+                Line(circle=(centerx, centery, r, a0, a1), width=sw, cap='none')
+            else:
+                Ellipse(pos=(centerx, centery), size=dd, angle_start=a0, angle_end=a1)
             a0 = a1
 
     # I'm using theta for the angle, as to not confuse it with transparency (alpha as in in rgba)

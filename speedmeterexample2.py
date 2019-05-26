@@ -23,6 +23,7 @@ class SpeedMeterExample2(App):
             sm.sectors = [sm.min]
         if self.lastPick <= sm.sectors[-1]: return
         sm.sectors = sm.sectors + [hex_color, self.lastPick]
+        self.root.ids['sectorWidth'].disabled = False
 
     def _setCadranColor(self, hex_color):
         self.sm.cadranColor = hex_color
