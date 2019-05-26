@@ -9,7 +9,7 @@ from kivy.properties import *
 
 from speedmeter import SpeedMeter
 
-class SpeedMeterExample2(App):
+class Demo2(App):
 
     currentColor = StringProperty('')
 
@@ -48,4 +48,4 @@ class SpeedMeterExample2(App):
         w['labelRadiusRatio'].disabled = disabled
         w['labelAngleRatio'].disabled = disabled
 
-SpeedMeterExample2().run()
+Demo2().run()

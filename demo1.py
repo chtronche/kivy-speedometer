@@ -7,7 +7,7 @@ class NoValueSpeedMeter(SpeedMeter):
 
     def valueStr(self, n): return ''
 
-class SpeedMeterExample(App):
+class Demo1(App):
 
     def tick(self, *t, **kw):
         ids = self.root.ids
@@ -17,6 +17,6 @@ class SpeedMeterExample(App):
                 s.value += 0.2
                 if s.value >= s.max - 0.001: s.value = s.min
 
-example = SpeedMeterExample()
+example = Demo1()
 Clock.schedule_interval(example.tick, 0.5)
 example.run()
