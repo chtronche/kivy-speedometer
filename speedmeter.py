@@ -21,12 +21,6 @@ _redrawLabel = 'label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'
 
 from kivy.graphics.instructions import *
 
-_n = 0
-def _toto(*t, **k):
-    global _n
-    #print 'toto>>', _n
-    _n += 1
-
 _2pi = 2 * pi # I trust multiplication by 2 even for floating points !
 _halfPi = pi / 2
 
@@ -109,7 +103,7 @@ class SpeedMeter(Widget):
     def _drawValues(self, centerx, centery, r, theta0, theta1):
         valueStr = self.valueStr
         values = [Label(valueStr(i), bold=True)
-                      for i in xrange(self.min, self.max + 1, self.tick)]
+                      for i in range(self.min, self.max + 1, self.tick)]
         if len(values) <= 1:
             # Tick is bigger than max - min
             return
@@ -147,7 +141,7 @@ class SpeedMeter(Widget):
             # Subtick
             if subDeltaTheta and not last:
                 subTheta = theta + subDeltaTheta
-                for n in xrange(subtick):
+                for n in range(subtick):
                     subc = cos(subTheta)
                     subs = sin(subTheta)
                     Line(points=(
@@ -206,7 +200,6 @@ class SpeedMeter(Widget):
         self.canvas.before.clear()
         self.canvas.after.clear()
         with self.canvas.before:
-            Callback(_toto)
             r = d / 2
             self.r2 = r * r
             x, y = self.pos
@@ -274,7 +267,7 @@ class SpeedMeter(Widget):
         # Should make distinction between min and max here
         
     def collide_point(self, x, y):
-        return self.getValueFromEV(*(x, y)) is not None
+        return self.getValue(*(x, y)) is not None
 
     def on_startAngle(self, *t):
         if self.endAngle - self.startAngle > 360:
