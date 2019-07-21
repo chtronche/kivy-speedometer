@@ -28,6 +28,9 @@ class Demo2(App):
     def _setCadranColor(self, hex_color):
         self.sm.cadranColor = hex_color
 
+    def _setShadowColor(self, hex_color):
+        self.sm.shadowColor = hex_color
+
     def _touch_down(self, sm, motionEvent):
         if motionEvent.button == 'left':
             v = sm.getValue(motionEvent.pos)

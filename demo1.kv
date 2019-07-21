@@ -1,23 +1,22 @@
-<SpeedMeter>:
-    label: 'Toto'
+<BoxLayout>:
+    height: 30
 
 GridLayout:
-    pos: root.pos
-    size: root.size
-    cols: 3
-    padding: 10
+    rows: 4
     spacing: 10
 
     SpeedMeter:
         id: speed
+        max: speed_value.max
+        tick: 20
         startAngle: -120
         endAngle: 120
         subtick: 5
         label: 'Km/h'
         value: speed_value.value
         cadranColor: '#0f0f0f'
+        needleColor: '#ff0000'
         sectors: (0, '#ffffff')
-        labelRadiusRatio: -0.3
 
     SpeedMeter:
         id: clock
@@ -28,6 +27,8 @@ GridLayout:
         startAngle: 0
         endAngle: 0
         subtick: 5
+        cadranColor: '#0000ff'
+        shadowColor: '#ffa500'
 
     NoValueSpeedMeter:
         id: fuel
@@ -42,13 +43,20 @@ GridLayout:
 
     Slider:
         id: speed_value
+        max: 200
+        size_hint_y: None
+        height: sp(28)
 
     Slider:
         value: clock.value
         max: 12
+        size_hint_y: None
+        height: sp(28)
 
-    Switch:
-        id: switch
+    Label:
+        width: sp(32)
+        size_hint_y: None
+        height: sp(28)
 
     SpeedMeter:
         id: temperature

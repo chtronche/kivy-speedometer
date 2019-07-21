@@ -153,6 +153,16 @@ BoxLayout:
         Label:
 
         Label:
+            text: 'shadowColor (as hex)'
+        Button:
+            text: 'select color'
+            on_release:
+                dialog = Factory.ColorPickerDialog()
+                dialog._exampleCallback = app._setShadowColor
+                dialog.open()
+        Label:
+
+        Label:
             text: 'label'
         TextInput:
             on_text_validate:

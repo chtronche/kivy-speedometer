@@ -1,0 +1,8 @@
+This is a SpeedMeter widget for Kivy.
+
+I thought Andrea Gavana's SpeedMeter for wxPython was cool, but I
+wanted to switch to Kivy, so I wrote a similar widget for Kivy.
+
+Documentation at https://tronche.com/wiki/Kivy-speedmeter
+
+
