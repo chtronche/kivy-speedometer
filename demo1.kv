@@ -1,3 +1,5 @@
+#:import Factory kivy.factory.Factory
+
 <BoxLayout>:
     height: 30
 
@@ -29,12 +31,15 @@ GridLayout:
         subtick: 5
         cadranColor: '#0000ff'
         shadowColor: '#ffa500'
+        labelRadiusRatio: -0.5
+        on_value: self.label = '%d s' % (self.value * 6)
 
     NoValueSpeedMeter:
         id: fuel
         startAngle: 150
         endAngle: 20
         max: 4
+        value: 0
         tick: 1
         labelRadiusRatio: 0.4
         labelIcon: 'fuel.png'
@@ -46,17 +51,35 @@ GridLayout:
         max: 200
         size_hint_y: None
         height: sp(28)
+        on_value: app.set_speed()
+        on_touch_down:
+            if self.collide_point(*args[1].pos) and fuel.value <= fuel.min: Factory.fuelPopup().open()
 
-    Slider:
-        value: clock.value
-        max: 12
+    BoxLayout:
         size_hint_y: None
         height: sp(28)
 
-    Label:
-        width: sp(32)
+        Button:
+            text: 'Stop'
+            size_hint_x: None
+            on_press:
+                app.clockRunning = not app.clockRunning
+                self.text = 'Stop' if app.clockRunning else 'Resume'
+        Label:
+            text: 'A simple Clock'
+
+    BoxLayout:
+        id: layout1
         size_hint_y: None
         height: sp(28)
+        orientation: 'vertical'
+        Button:
+            text: 'Refill !'
+            size_hint_x: None
+            pos_hint: { 'center_x': 0.5 }
+            on_release:
+                fuel.value = fuel.max
+                speed_value.disabled = False
 
     SpeedMeter:
         id: temperature
@@ -87,3 +110,18 @@ GridLayout:
         min: 0
         startAngle: -150
         endAngle: 90
+
+<fuelPopup@Popup>:
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: (0.9, 0.9)
+        Label:
+            text: "You're out of gas, please refill\nthere's a refill button."
+        Button:
+            size_hint: (None, None)
+            pos_hint: { 'center_x': 0.5 }
+            text: 'close'
+            on_release:
+                app.root.ids.speed_value.value = 0
+                app.root.ids.rpm.value = 0
+                root.dismiss()
