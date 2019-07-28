@@ -43,7 +43,8 @@ class Demo2(App):
             self.colorPicker._exampleCallback = self._setVectorColor
             self.colorPicker.open()
 
-    def setLabelControlState(self):
+    def setLabelControlState(self, modal):
+        if modal.field2Set != 'labelIconScale': return
         w = self.root.ids
         w['labelIconScale'].disabled = not self.sm.labelIcon
         sm = self.sm

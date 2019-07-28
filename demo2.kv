@@ -177,6 +177,17 @@ BoxLayout:
             text: 'select icon'
             on_release:
                 dialog = Factory.FileChooserDialog()
+                dialog.field2Set = 'labelIcon'
+                dialog.open()
+        Label:
+
+        Label:
+            text: 'needle icon'
+        Button:
+            text: 'select icon'
+            on_release:
+                dialog = Factory.FileChooserDialog()
+                dialog.field2Set = 'needleIcon'
                 dialog.open()
         Label:
 
@@ -257,8 +268,8 @@ BoxLayout:
             id: filechooser        
             path: '.'
             on_submit:
-                app.root.ids['sm'].labelIcon = filechooser.selection[0]
-                app.setLabelControlState()
+                setattr(app.root.ids['sm'], root.field2Set, filechooser.selection[0])
+                app.setLabelControlState(root)
                 filechooserdialog.dismiss()
 
         BoxLayout:
@@ -266,11 +277,11 @@ BoxLayout:
             Button:
                 text: 'cancel'
                 on_release:
-                    app.setLabelControlState()
+                    app.setLabelControlState(root)
                     filechooserdialog.dismiss()
             Button:
                 text: 'remove icon'
                 on_release:
-                    app.root.ids['sm'].labelIcon = ''
-                    app.setLabelControlState()
+                    setattr(app.root.ids['sm'], root.field2Set, '')
+                    app.setLabelControlState(root)
                     filechooserdialog.dismiss()

@@ -17,9 +17,10 @@ from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
 _redraw = tuple('pos size min max'.split())
-_redraw_before = tuple('sectors sectorWidth shadowColor'.split())
+_redraw_background = tuple('sectors sectorWidth shadowColor'.split())
 _redraw_fullCadran = tuple('tick subtick cadranColor displayFirst displayLast'.split())
 _redraw_label = tuple('label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'.split())
+_redraw_needdle = tuple('needleColor needleImage'.split())
 
 from kivy.graphics.instructions import *
 
@@ -87,8 +88,8 @@ class SpeedMeter(Widget):
         self.extendedTouch = False
         bind = self.bind
         for eventList, fn in (
-                (_redraw, self._draw), 
-                (_redraw_before, self._draw_before),
+                (_redraw, self._redraw), 
+                (_redraw_background, self._draw_background),
                 (_redraw_fullCadran, self._draw_fullCadran),
                 (_redraw_label, self._draw_label),
         ):
@@ -274,11 +275,11 @@ class SpeedMeter(Widget):
         s = needleSize * 2
         add(Color(rgba=get_color_from_hex(self.needleColor)))
         add(Rectangle(pos=(self.centerx - needleSize, self.centery - needleSize), size=(s, s),
-                      source='needle.png'))
+                      source=self.needleImage))
         add(PopMatrix())
         self.on_value()
         
-    def _draw_before(self, *t):
+    def _draw_background(self, *t):
         self._draw_sectors()
         self._draw_shadow()
 
@@ -286,7 +287,7 @@ class SpeedMeter(Widget):
         self._draw_outerCadran()
         self._draw_values()
 
-    def _draw(self, *args):
+    def _redraw(self, *args):
         diameter = min(self.size)
         sa = self.startAngle
         ea = self.endAngle
@@ -322,7 +323,7 @@ class SpeedMeter(Widget):
         #
         # Draw
         #
-        self._draw_before()
+        self._draw_background()
         self._draw_fullCadran()
         self._draw_label()
         self._draw_needle()
@@ -355,11 +356,11 @@ class SpeedMeter(Widget):
     def on_startAngle(self, *t):
         if self.endAngle - self.startAngle > 360:
             self.startAngle = self.endAngle - 360
-        self._draw()
+        self._redraw()
 
     def on_endAngle(self, *t):
         if self.endAngle - self.startAngle > 360:
             self.endAngle = self.startAngle + 360
-        self._draw()
+        self._redraw()
 
 class _X: pass
