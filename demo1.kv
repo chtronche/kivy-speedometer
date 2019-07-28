@@ -94,6 +94,7 @@ GridLayout:
         labelRadiusRatio: 0.35
         cadranColor: '#000000'
         sectors: [35, '#0000ff', 40, '#ffff00', 42, '#ff0000', 43]
+        on_touch_move: app.set_temp(*args)
 
     SpeedMeter:
         id: rpm
@@ -111,6 +112,18 @@ GridLayout:
         min: 0
         startAngle: -150
         endAngle: 90
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: sp(28)
+        Label:
+            text: 'Move the mouse on temp !'
+        Label:
+            id: temperature_display
+            text: '35.00'
+            size_hint_x: None
+            width: sp(10)
 
 <fuelPopup@Popup>:
     BoxLayout:

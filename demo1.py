@@ -43,6 +43,12 @@ class Demo1(App):
         fuel = ids.fuel
         ids.rpm.value = exp(ids.speed_value.value / 200.0) * 4.5 - 4.5
 
+    def set_temp(self, temperature, motion):
+        v = temperature.getValue(motion.pos)
+        if not v: return
+        temperature.value = v
+        self.root.ids.temperature_display.text = '%.2f' % v
+
 example = Demo1()
 Clock.schedule_interval(example.tick, 0.5)
 example.run()
