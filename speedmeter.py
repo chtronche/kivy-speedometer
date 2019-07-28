@@ -18,13 +18,22 @@ from kivy.utils import get_color_from_hex
 
 _redraw = tuple('pos size min max'.split())
 _redraw_before = tuple('sectors sectorWidth shadowColor'.split())
-_redraw_canvas = tuple('tick subtick cadranColor displayFirst displayLast'.split())
-_redraw_after = tuple('label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'.split())
+_redraw_fullCadran = tuple('tick subtick cadranColor displayFirst displayLast'.split())
+_redraw_label = tuple('label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'.split())
 
 from kivy.graphics.instructions import *
 
 _2pi = 2 * pi # I trust multiplication by 2 even for floating points !
 _halfPi = pi / 2
+
+#
+# Each part is stores in its own InstructionGroup, so as to minimize
+# redrawing / recomputation when something is modified, except
+# outerCadran and values that is really one function, but is split for
+# the sake of understandability.
+#
+
+_ig = tuple('sectors shadow outerCadran values label needle'.split())
 
 class SpeedMeter(Widget):
 
@@ -69,12 +78,20 @@ class SpeedMeter(Widget):
         self.rotate = _X
         self._labelRectangle = -1
 
+        add = self.canvas.add
+        for instructionGroupName in _ig:
+            ig = InstructionGroup()
+            setattr(self, '_%sIG' % instructionGroupName, ig)
+            add(ig)
+
         self.extendedTouch = False
         bind = self.bind
-        _draw = self._draw
         for eventList, fn in (
-                (_redraw, self._draw), (_redraw_before, self._draw_before),
-                (_redraw_canvas, self._draw_canvas), (_redraw_after, self._draw_after)):
+                (_redraw, self._draw), 
+                (_redraw_before, self._draw_before),
+                (_redraw_fullCadran, self._draw_fullCadran),
+                (_redraw_label, self._draw_label),
+        ):
             for event in eventList:
                 bind(**{ event: fn })
             
@@ -82,7 +99,9 @@ class SpeedMeter(Widget):
         # Override this if you want more control on the tick display
         return str(int(n))
 
-    def _drawSectors(self):
+    def _draw_sectors(self):
+        self._sectorsIG.clear()
+        add = self._sectorsIG.add
         l = self.sectors[:]
         if not l: return
         r = self.r
@@ -105,36 +124,44 @@ class SpeedMeter(Widget):
             color = l.pop(0)
             v1 = l.pop(0) if l else self.max
             a1 = -(a * v1 + b)
-            Color(rgba=get_color_from_hex(color))
+            add(Color(rgba=get_color_from_hex(color)))
             if sw:
-                Line(circle=(centerx, centery, r, a0, a1), width=sw, cap='none')
+                add(Line(circle=(centerx, centery, r, a0, a1), width=sw, cap='none'))
             else:
-                Ellipse(pos=(centerx, centery), size=dd, angle_start=a0, angle_end=a1)
+                add(Ellipse(pos=(centerx, centery), size=dd, angle_start=a0, angle_end=a1))
             a0 = a1
 
-    def _drawShadow(self):
-        if not self.shadowColor: return
-        if not self._shadow:
-            Color(rgba=get_color_from_hex(self.shadowColor))            
-            self._shadow = Line(width=5, cap='none')
-
+    def _setShadowValue(self):
+        if not self._shadow: return
         a0 = -(self.a * self.min + self.b)
         a1 = -(self.a * self.value + self.b)
         self._shadow.circle = (self.centerx, self.centery, self.r-5, a0, a1)
 
-    def _drawOuterCadran(self):
+    def _draw_shadow(self):
+        self._shadowIG.clear()
+        self._shadow = None
+        if not self.shadowColor: return
+        add = self._shadowIG.add
+        add(Color(rgba=get_color_from_hex(self.shadowColor)))
+        self._shadow = Line(width=5, cap='none')
+        add(self._shadow)
+        self._setShadowValue()
+
+    def _draw_outerCadran(self):
+        self._outerCadranIG.clear()
+        add = self._outerCadranIG.add
         centerx = self.centerx
         centery = self.centery
         r = self.r
         theta0 = self.startAngle
         theta1 = self.endAngle
-        Color(rgba=get_color_from_hex(self.cadranColor))
+        add(Color(rgba=get_color_from_hex(self.cadranColor)))
         if theta0 == theta1:
-            Line(circle=(centerx, centery, r), width=1.5)
+            add(Line(circle=(centerx, centery, r), width=1.5))
         else:
             rt0 = radians(theta0)
             rt1 = radians(theta1)
-            Line(points=(
+            add(Line(points=(
                 centerx + r * sin(rt0),
                 centery + r * cos(rt0),
                 centerx, centery,
@@ -142,11 +169,13 @@ class SpeedMeter(Widget):
                 centery + r * cos(rt1),
                 ),
                 width=1.5,
-                     )
-            Line(circle=(centerx, centery, r, theta0, theta1), width=1.5)
+                     ))
+            add(Line(circle=(centerx, centery, r, theta0, theta1), width=1.5))
 
     # I'm using theta for the angle, as to not confuse it with transparency (alpha as in in rgba)
-    def _drawValues(self):
+    def _draw_values(self):
+        self._valuesIG.clear()
+        add = self._valuesIG.add
         centerx = self.centerx
         centery = self.centery
         r = self.r
@@ -179,34 +208,36 @@ class SpeedMeter(Widget):
             r_1 = r - 1
             if not first and not last or first and self.displayFirst or last and self.displayLast:
                 # Draw the big tick
-                Line(points=(
+                add(Line(points=(
                     centerx + r_1 * s, centery + r_1 * c,
                     centerx + r_10 * s, centery + r_10 * c,
                     ),
-                    width=2)
+                    width=2))
                 # Numerical value
                 t = value.texture
                 tw, th = t.size
-                Rectangle(
+                add(Rectangle(
                     pos=(centerx + r_20 * s - tw / 2, centery + r_20 * c - th / 2),
                     size=t.size,
-                    texture=t)
+                    texture=t))
             # Subtick
             if subDeltaTheta and not last:
                 subTheta = theta + subDeltaTheta
                 for n in range(subtick):
                     subc = cos(subTheta)
                     subs = sin(subTheta)
-                    Line(points=(
+                    add(Line(points=(
                         centerx + r * subs, centery + r * subc,
                         centerx + r_10 * subs, centery + r_10 * subc),
-                             width=0.75)
+                             width=0.75))
                     subTheta += subDeltaTheta
             theta += deltaTheta
 
-    def _drawLabel(self, *t):
+    def _draw_label(self, *t):
+        self._labelIG.clear()
         if not self.label and not self.labelIcon:
             return
+
         theta = self.startAngle + self.labelAngleRatio * (self.endAngle - self.startAngle)
         c = cos(radians(theta))
         s = sin(radians(theta))
@@ -225,41 +256,35 @@ class SpeedMeter(Widget):
             label.refresh()
             t = label.texture
             tw, th = t.size
-        Rectangle(
-            pos=(self.centerx + r1 * s - tw/2, self.centery + r1 * c - th/2), size=(tw, th),
-            texture=t)
+        self._labelIG.add(
+            Rectangle(
+                pos=(self.centerx + r1 * s - tw/2, self.centery + r1 * c - th/2), size=(tw, th),
+                texture=t))
 
-    def _drawNeedle(self):
+    def _draw_needle(self):
+        self._needleIG.clear()
+        add = self._needleIG.add
+        add(PushMatrix())
+        self.rotate = Rotate(origin=(self.centerx, self.centery))
+        add(self.rotate)
+
         if self.value < self.min: self.value = self.min
         elif self.value > self.max: self.value = self.max
-        self.on_value()
         needleSize = self.r
         s = needleSize * 2
-        Color(rgba=get_color_from_hex(self.needleColor))
-        Rectangle(pos=(self.centerx - needleSize, self.centery - needleSize), size=(s, s),
-                      source='needle.png')
+        add(Color(rgba=get_color_from_hex(self.needleColor)))
+        add(Rectangle(pos=(self.centerx - needleSize, self.centery - needleSize), size=(s, s),
+                      source='needle.png'))
+        add(PopMatrix())
+        self.on_value()
         
     def _draw_before(self, *t):
-        self.canvas.before.clear()
-        self._shadow = None
-        with self.canvas.before:
-            self._drawSectors()
-            self._drawShadow()
+        self._draw_sectors()
+        self._draw_shadow()
 
-    def _draw_canvas(self, *t):
-        self.canvas.clear()
-        with self.canvas:
-            self._drawOuterCadran()
-            self._drawValues()
-
-    def _draw_after(self, *t):
-        self.canvas.after.clear()
-        with self.canvas.after:
-            self._drawLabel()
-            PushMatrix()
-            self.rotate = Rotate(origin=(self.centerx, self.centery))
-            self._drawNeedle()
-            PopMatrix()
+    def _draw_fullCadran(self, *t):
+        self._draw_outerCadran()
+        self._draw_values()
 
     def _draw(self, *args):
         diameter = min(self.size)
@@ -297,14 +322,14 @@ class SpeedMeter(Widget):
         #
         # Draw
         #
-        # A bit overcomplicated here, I should only use my own groups (maybe)
         self._draw_before()
-        self._draw_canvas()
-        self._draw_after()
+        self._draw_fullCadran()
+        self._draw_label()
+        self._draw_needle()
             
     def on_value(self, *t):
         self.rotate.angle = self.a * self.value + self.b
-        self._drawShadow()
+        self._setShadowValue()
 
     def getValue(self, pos):
         c = self.center
