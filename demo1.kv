@@ -107,11 +107,16 @@ GridLayout:
         sectors: [0, '#000000', 6, '#ffff00', 7, '#ff0000', 8]
         sectorWidth: 5
 
-    SpeedMeter:
+    PiValueSpeedMeter:
         id: pi
         min: 0
-        startAngle: -150
-        endAngle: 90
+        max: 240
+        startAngle: 90
+        endAngle: -150
+        tick: 30
+        subtick: 3
+        labelIcon: 'pi.png'
+        labelRadiusRatio: 0
 
     BoxLayout:
         orientation: 'horizontal'
@@ -124,6 +129,32 @@ GridLayout:
             text: '35.00'
             size_hint_x: None
             width: sp(10)
+
+    BoxLayout:
+        size_hint_y: None
+        height: sp(28)
+        orientation: 'vertical'
+        Label:
+            size_hint_y: None
+            height: sp(28)
+            pos_hint: { 'center_x': 0.65 }
+            text: 'Type in an angle in degree:'
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: sp(28)
+        TextInput:
+            id: pi_text
+            multiline: False
+            size_hint: None, None
+            height: sp(28)
+        Button:
+            text: 'Go!'
+            size_hint: None, None
+            height: sp(28)
+            on_release:
+                app.set_pi()
 
 <fuelPopup@Popup>:
     BoxLayout:

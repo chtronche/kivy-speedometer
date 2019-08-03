@@ -13,6 +13,18 @@ class NoValueSpeedMeter(SpeedMeter):
 
     def valueStr(self, n): return ''
 
+_displayed = { 
+    0: '0',
+    30: u'\u03a0 / 6', 60: u'\u03a0/3', 90: u'\u03a0/2', 120: u'2\u03a0/3',
+    150: u'5\u03a0/6',
+    180: u'\u03a0', 210: u'7\u03a0/6', 240: u'4\u03a0/3'
+    }
+
+class PiValueSpeedMeter(SpeedMeter):
+
+    def valueStr(self, n):
+        return _displayed.get(n, '')
+
 class Demo1(App):
 
     def __init__(self):
@@ -48,6 +60,13 @@ class Demo1(App):
         if not v: return
         temperature.value = v
         self.root.ids.temperature_display.text = '%.2f' % v
+
+    def set_pi(self):
+        ids = self.root.ids
+        try: v = float(self.root.ids.pi_text.text)
+        except: return
+        if v < 0 or v > 240: return
+        ids.pi.value = v
 
 example = Demo1()
 Clock.schedule_interval(example.tick, 0.5)
