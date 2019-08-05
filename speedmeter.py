@@ -18,9 +18,9 @@ from kivy.utils import get_color_from_hex
 
 _redraw = tuple('pos size min max'.split())
 _redraw_background = tuple('sectors sectorWidth shadowColor'.split())
-_redraw_fullCadran = tuple('tick subtick cadranColor displayFirst displayLast'.split())
-_redraw_label = tuple('label labelRadiusRatio labelAngleRatio labelIcon labelIconScale'.split())
-_redraw_needdle = tuple('needleColor needleImage'.split())
+_redraw_fullCadran = tuple('tick subtick cadranColor displayFirst displayLast valueFontSize'.split())
+_redraw_label = tuple('label labelRadiusRatio labelAngleRatio labelIcon labelIconScale labelFontSize'.split())
+_redraw_needle = tuple('needleColor needleImage'.split())
 
 from kivy.graphics.instructions import *
 
@@ -56,6 +56,8 @@ class SpeedMeter(Widget):
     label = StringProperty('')
     labelIcon = StringProperty('')
     labelIconScale = NumericProperty(0.5, min=0, max=1)
+    labelFontSize = NumericProperty(15, min=1)
+    valueFontSize = NumericProperty(15, min=1)
 
     labelRadiusRatio = NumericProperty(0.3, min=-1, max=1)
     labelAngleRatio = NumericProperty(0.5, min=0, max=1)
@@ -92,6 +94,7 @@ class SpeedMeter(Widget):
                 (_redraw_background, self._draw_background),
                 (_redraw_fullCadran, self._draw_fullCadran),
                 (_redraw_label, self._draw_label),
+                (_redraw_needle, self._draw_needle),
         ):
             for event in eventList:
                 bind(**{ event: fn })
@@ -181,7 +184,7 @@ class SpeedMeter(Widget):
         centery = self.centery
         r = self.r
         valueStr = self.valueStr
-        values = [Label(valueStr(i), bold=True)
+        values = [Label(valueStr(i), bold=True, font_size=self.valueFontSize)
                       for i in range(self.min, self.max + 1, self.tick)]
         if len(values) <= 1:
             # Tick is bigger than max - min
@@ -201,6 +204,7 @@ class SpeedMeter(Widget):
             subDeltaTheta = deltaTheta / subtick
         else:
             subDeltaTheta = None
+        # Should be more efficient on texture allocation
         for value in values:
             first = value is values[0]
             last = value is values[-1]
@@ -253,7 +257,7 @@ class SpeedMeter(Widget):
             tw *= scale
             th *= scale
         else:
-            label = Label(text=self.label, markup=True, bold=True)
+            label = Label(text=self.label, markup=True, bold=True, font_size=self.labelFontSize)
             label.refresh()
             t = label.texture
             tw, th = t.size
@@ -262,7 +266,7 @@ class SpeedMeter(Widget):
                 pos=(self.centerx + r1 * s - tw/2, self.centery + r1 * c - th/2), size=(tw, th),
                 texture=t))
 
-    def _draw_needle(self):
+    def _draw_needle(self, *t):
         self._needleIG.clear()
         add = self._needleIG.add
         add(PushMatrix())

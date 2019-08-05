@@ -1,6 +1,6 @@
 from kivy.config import Config
 Config.set('graphics', 'width', 1000)
-Config.set('graphics', 'height', 650)
+Config.set('graphics', 'height', 775)
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 from kivy.app import App
@@ -16,6 +16,7 @@ class Demo2(App):
     def on_start(self):
         self.sm = self.root.ids['sm']
         self.sm.bind(on_touch_down=self._touch_down)
+        self.field2Set = False # Dirty
 
     def _setVectorColor(self, hex_color):
         sm = self.sm
@@ -31,6 +32,9 @@ class Demo2(App):
     def _setShadowColor(self, hex_color):
         self.sm.shadowColor = hex_color
 
+    def _setNeedleColor(self, hex_color):
+        self.sm.needleColor = hex_color
+
     def _touch_down(self, sm, motionEvent):
         if motionEvent.button == 'left':
             v = sm.getValue(motionEvent.pos)
@@ -44,12 +48,15 @@ class Demo2(App):
             self.colorPicker.open()
 
     def setLabelControlState(self, modal):
-        if modal.field2Set != 'labelIconScale': return
+        #if modal.field2Set != 'labelIconScale': return
         w = self.root.ids
         w['labelIconScale'].disabled = not self.sm.labelIcon
         sm = self.sm
         disabled = not sm.label and not sm.labelIcon
         w['labelRadiusRatio'].disabled = disabled
         w['labelAngleRatio'].disabled = disabled
+
+        disabled = not sm.label or sm.labelIcon
+        w['labelFontSize'].disabled = disabled
 
 Demo2().run()

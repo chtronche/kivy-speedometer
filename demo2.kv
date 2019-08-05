@@ -37,14 +37,19 @@ BoxLayout:
             startAngle: startAngle.value
             endAngle: endAngle.value
             subtick: subtick.value
+            valueFontSize: valueFontSize.value
             displayFirst: displayFirst.active
             displayLast: displayLast.active
+            labelFontSize: labelFontSize.value
             labelRadiusRatio: labelRadiusRatio.value
             labelAngleRatio: labelAngleRatio.value
             labelIconScale: labelIconScale.value
             sectorWidth: sectorWidth.value
 
-            on_value: display.text = str(self.value)
+            on_touch_move:
+                self.value = (lambda v: self.value if v is None else v)(self.getValue(args[1].pos))
+            on_value:
+                display.text = str(self.value)
 
         Label:
             text: 'Value:'
@@ -70,6 +75,7 @@ BoxLayout:
         size_hint: 0.6, 1
         cols: 3
         spacing: 10
+        row_default_height: sp(26)
         cols_minimum: { 0: sp(200), 1: sp(200) }
 
         Label:
@@ -153,6 +159,17 @@ BoxLayout:
         Label:
 
         Label:
+            text: 'valueFontSize'
+        Slider:
+            id: valueFontSize
+            min: 1
+            max: 50
+            step: 1
+            value: 15
+        Label:
+            text: '%d' % valueFontSize.value
+
+        Label:
             text: 'shadowColor (as hex)'
         Button:
             text: 'select color'
@@ -167,9 +184,20 @@ BoxLayout:
         TextInput:
             on_text_validate:
                 sm.label = self.text
-                app.setLabelControlState()
-                
+                app.setLabelControlState(app)
         Label:
+
+        Label:
+            text: 'labelFontSize'
+        Slider:
+            id: labelFontSize
+            min: 1
+            max: 50
+            step: 1
+            value: 15
+            disabled: True
+        Label:
+            text: '%d' % labelFontSize.value
 
         Label:
             text: 'or labelIcon'
@@ -182,14 +210,24 @@ BoxLayout:
         Label:
 
         Label:
-            text: 'needle icon'
+            text: 'needleImage'
         Button:
             text: 'select icon'
             on_release:
                 dialog = Factory.FileChooserDialog()
-                dialog.field2Set = 'needleIcon'
+                dialog.field2Set = 'needleImage'
                 dialog.open()
         Label:
+
+        Label:
+            text: 'needleColor (as hex)'
+        Button:
+            text: 'select color'
+            on_release:
+                dialog = Factory.ColorPickerDialog()
+                dialog._exampleCallback = app._setNeedleColor
+                dialog.open()
+        Label:       
 
         Label:
             text: 'labelRadiusRatio (float, -1..1)'
