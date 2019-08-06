@@ -30,24 +30,24 @@ BoxLayout:
                 text: 'reset sectors'
                 on_release:
                     sm.sectors = []
-                    sectorWidth.disabled = True            
+                    sector_width.disabled = True            
 
         SpeedMeter:
             id: sm
-            startAngle: startAngle.value
-            endAngle: endAngle.value
+            start_angle: start_angle.value
+            end_angle: end_angle.value
             subtick: subtick.value
-            valueFontSize: valueFontSize.value
-            displayFirst: displayFirst.active
-            displayLast: displayLast.active
-            labelFontSize: labelFontSize.value
-            labelRadiusRatio: labelRadiusRatio.value
-            labelAngleRatio: labelAngleRatio.value
-            labelIconScale: labelIconScale.value
-            sectorWidth: sectorWidth.value
+            value_font_size: value_font_size.value
+            display_first: display_first.active
+            display_last: display_last.active
+            label_font_size: label_font_size.value
+            label_radius_ratio: label_radius_ratio.value
+            label_angle_ratio: label_angle_ratio.value
+            label_icon_scale: label_icon_scale.value
+            sector_width: sector_width.value
 
             on_touch_move:
-                self.value = (lambda v: self.value if v is None else v)(self.getValue(args[1].pos))
+                self.value = (lambda v: self.value if v is None else v)(self.get_value(args[1].pos))
             on_value:
                 display.text = str(self.value)
 
@@ -113,43 +113,43 @@ BoxLayout:
             text: str(int(sm.subtick))
 
         Label:
-            text: 'displayFirst'
+            text: 'display_first'
         CheckBox:
-            id: displayFirst
+            id: display_first
             active: True
         Label:
 
         Label:
-            text: 'displayLast'
+            text: 'display_last'
         CheckBox:
-            id: displayLast
+            id: display_last
             active: True
         Label:
 
         Label:
-            text: 'startAngle (float, -360..360)'
+            text: 'start_angle (float, -360..360)'
         Slider:
-            id: startAngle
+            id: start_angle
             min: -360
             max: 360
             step: 1
             value: -90
         Label:
-            text: str(int(sm.startAngle))
+            text: str(int(sm.start_angle))
 
         Label:
-            text: 'endAngle (float, -360..360)'
+            text: 'end_angle (float, -360..360)'
         Slider:
-            id: endAngle
+            id: end_angle
             min: -360
             max: 360
             step: 1
             value: 135
         Label:
-            text: str(int(sm.endAngle))
+            text: str(int(sm.end_angle))
 
         Label:
-            text: 'cadranColor (as hex)'
+            text: 'cadran_color (as hex)'
         Button:
             text: 'select color'
             on_release:
@@ -159,18 +159,18 @@ BoxLayout:
         Label:
 
         Label:
-            text: 'valueFontSize'
+            text: 'value_font_size'
         Slider:
-            id: valueFontSize
+            id: value_font_size
             min: 1
             max: 50
             step: 1
             value: 15
         Label:
-            text: '%d' % valueFontSize.value
+            text: '%d' % value_font_size.value
 
         Label:
-            text: 'shadowColor (as hex)'
+            text: 'shadow_color (as hex)'
         Button:
             text: 'select color'
             on_release:
@@ -188,39 +188,39 @@ BoxLayout:
         Label:
 
         Label:
-            text: 'labelFontSize'
+            text: 'label_font_size'
         Slider:
-            id: labelFontSize
+            id: label_font_size
             min: 1
             max: 50
             step: 1
             value: 15
             disabled: True
         Label:
-            text: '%d' % labelFontSize.value
+            text: '%d' % label_font_size.value
 
         Label:
-            text: 'or labelIcon'
+            text: 'or label_icon'
         Button:
             text: 'select icon'
             on_release:
                 dialog = Factory.FileChooserDialog()
-                dialog.field2Set = 'labelIcon'
+                dialog.field2Set = 'label_icon'
                 dialog.open()
         Label:
 
         Label:
-            text: 'needleImage'
+            text: 'needle_image'
         Button:
             text: 'select icon'
             on_release:
                 dialog = Factory.FileChooserDialog()
-                dialog.field2Set = 'needleImage'
+                dialog.field2Set = 'needle_image'
                 dialog.open()
         Label:
 
         Label:
-            text: 'needleColor (as hex)'
+            text: 'needle_color (as hex)'
         Button:
             text: 'select color'
             on_release:
@@ -230,49 +230,49 @@ BoxLayout:
         Label:       
 
         Label:
-            text: 'labelRadiusRatio (float, -1..1)'
+            text: 'label_radius_ratio (float, -1..1)'
         Slider:
-            id: labelRadiusRatio
+            id: label_radius_ratio
             min: -1
             max: 1
             value: 0.3
             disabled: True
         Label:
-            text: '%.3f' % sm.labelRadiusRatio
+            text: '%.3f' % sm.label_radius_ratio
 
         Label:
-            text: 'labelAngleRatio (float, 0..1)'
+            text: 'label_angle_ratio (float, 0..1)'
         Slider:
-            id: labelAngleRatio
+            id: label_angle_ratio
             min: 0
             max: 1
             value: 0.5
             disabled: True
         Label:
-            text: '%.3f' % sm.labelAngleRatio
+            text: '%.3f' % sm.label_angle_ratio
 
         Label:
-            text: 'labelIconScale (float, 0..2)'
+            text: 'label_icon_scale (float, 0..2)'
         Slider:
-            id: labelIconScale
+            id: label_icon_scale
             min: 0
             max: 2
             value: 0.5
             disabled: True
         Label:
-            text: '%.3f' % sm.labelIconScale
+            text: '%.3f' % sm.label_icon_scale
 
         Label:
-            text: 'sectorWidth (0 or int)'
+            text: 'sector_width (0 or int)'
         Slider:
-            id: sectorWidth
+            id: sector_width
             min: 0
             max: 30
             value: 0
             step: 1
             disabled: True
         Label:
-            text: str(int(sm.sectorWidth))
+            text: str(int(sm.sector_width))
 
 <ColorPickerDialog@ModalView>:
     id: colorpickerdialog

@@ -24,39 +24,39 @@ class Demo2(App):
             sm.sectors = [sm.min]
         if self.lastPick <= sm.sectors[-1]: return
         sm.sectors = sm.sectors + [hex_color, self.lastPick]
-        self.root.ids['sectorWidth'].disabled = False
+        self.root.ids['sector_width'].disabled = False
 
     def _setCadranColor(self, hex_color):
-        self.sm.cadranColor = hex_color
+        self.sm.cadran_color = hex_color
 
     def _setShadowColor(self, hex_color):
-        self.sm.shadowColor = hex_color
+        self.sm.shadow_color = hex_color
 
     def _setNeedleColor(self, hex_color):
-        self.sm.needleColor = hex_color
+        self.sm.needle_color = hex_color
 
     def _touch_down(self, sm, motionEvent):
         if motionEvent.button == 'left':
-            v = sm.getValue(motionEvent.pos)
+            v = sm.get_value(motionEvent.pos)
             if v is None: return
             sm.value = v
         else:
-            self.lastPick = sm.getValue(motionEvent.pos)
+            self.lastPick = sm.get_value(motionEvent.pos)
             if self.sm.sectors and self.lastPick <= self.sm.sectors[-1]: return
             self.colorPicker = Factory.ColorPickerDialog()
             self.colorPicker._exampleCallback = self._setVectorColor
             self.colorPicker.open()
 
     def setLabelControlState(self, modal):
-        #if modal.field2Set != 'labelIconScale': return
+        #if modal.field2Set != 'label_icon_scale': return
         w = self.root.ids
-        w['labelIconScale'].disabled = not self.sm.labelIcon
+        w['label_icon_scale'].disabled = not self.sm.label_icon
         sm = self.sm
-        disabled = not sm.label and not sm.labelIcon
-        w['labelRadiusRatio'].disabled = disabled
-        w['labelAngleRatio'].disabled = disabled
+        disabled = not sm.label and not sm.label_icon
+        w['label_radius_ratio'].disabled = disabled
+        w['label_angle_ratio'].disabled = disabled
 
-        disabled = not sm.label or sm.labelIcon
-        w['labelFontSize'].disabled = disabled
+        disabled = not sm.label or sm.label_icon
+        w['label_font_size'].disabled = disabled
 
 Demo2().run()

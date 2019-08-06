@@ -17,10 +17,10 @@ from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
 _redraw = tuple('pos size min max'.split())
-_redraw_background = tuple('sectors sectorWidth shadowColor'.split())
-_redraw_fullCadran = tuple('tick subtick cadranColor displayFirst displayLast valueFontSize'.split())
-_redraw_label = tuple('label labelRadiusRatio labelAngleRatio labelIcon labelIconScale labelFontSize'.split())
-_redraw_needle = tuple('needleColor needleImage'.split())
+_redraw_background = tuple('sectors sector_width shadow_color'.split())
+_redraw_full_cadran = tuple('tick subtick cadran_color display_first display_last value_font_size'.split())
+_redraw_label = tuple('label label_radius_ratio label_angle_ratio label_icon label_icon_scale label_font_size'.split())
+_redraw_needle = tuple('needle_color needle_image'.split())
 
 from kivy.graphics.instructions import *
 
@@ -44,32 +44,31 @@ class SpeedMeter(Widget):
     tick = NumericProperty(10)
     subtick = NumericProperty(0)
 
-    displayFirst = BooleanProperty(True)
-    displayLast = BooleanProperty(True)
+    display_first = BooleanProperty(True)
+    display_last = BooleanProperty(True)
 
-    startAngle = NumericProperty(-90, min=-360,max=360)
-    endAngle = NumericProperty(135, min=-360,max=360)
+    start_angle = NumericProperty(-90, min=-360,max=360)
+    end_angle = NumericProperty(135, min=-360,max=360)
 
-    cadranColor = StringProperty('#ffffff')
-    cadranThickness = NumericProperty
+    cadran_color = StringProperty('#ffffff')
 
     label = StringProperty('')
-    labelIcon = StringProperty('')
-    labelIconScale = NumericProperty(0.5, min=0, max=1)
-    labelFontSize = NumericProperty(15, min=1)
-    valueFontSize = NumericProperty(15, min=1)
+    label_icon = StringProperty('')
+    label_icon_scale = NumericProperty(0.5, min=0, max=1)
+    label_font_size = NumericProperty(15, min=1)
+    value_font_size = NumericProperty(15, min=1)
 
-    labelRadiusRatio = NumericProperty(0.3, min=-1, max=1)
-    labelAngleRatio = NumericProperty(0.5, min=0, max=1)
+    label_radius_ratio = NumericProperty(0.3, min=-1, max=1)
+    label_angle_ratio = NumericProperty(0.5, min=0, max=1)
 
-    needleColor = StringProperty('#6bf2ff')
-    needleImage = StringProperty('needle.png')
+    needle_color = StringProperty('#6bf2ff')
+    needle_image = StringProperty('needle.png')
 
     sectors = ListProperty()
-    sectorWidth = NumericProperty(0, min=0)
+    sector_width = NumericProperty(0, min=0)
     thickness = NumericProperty(1.5, min=0)
 
-    shadowColor = StringProperty('')
+    shadow_color = StringProperty('')
 
     value = NumericProperty(0)
 
@@ -92,14 +91,14 @@ class SpeedMeter(Widget):
         for eventList, fn in (
                 (_redraw, self._redraw), 
                 (_redraw_background, self._draw_background),
-                (_redraw_fullCadran, self._draw_fullCadran),
+                (_redraw_full_cadran, self._draw_full_cadran),
                 (_redraw_label, self._draw_label),
                 (_redraw_needle, self._draw_needle),
         ):
             for event in eventList:
                 bind(**{ event: fn })
             
-    def valueStr(self, n):
+    def value_str(self, n):
         # Override this if you want more control on the tick display
         return str(int(n))
 
@@ -116,7 +115,7 @@ class SpeedMeter(Widget):
         b = self.b
         v0 = l.pop(0)
         a0 = -(a * v0 + b)
-        sw = self.sectorWidth
+        sw = self.sector_width
         if sw:
             r -= sw
         else:
@@ -135,7 +134,7 @@ class SpeedMeter(Widget):
                 add(Ellipse(pos=(centerx, centery), size=dd, angle_start=a0, angle_end=a1))
             a0 = a1
 
-    def _setShadowValue(self):
+    def _set_shadow_value(self):
         if not self._shadow: return
         a0 = -(self.a * self.min + self.b)
         a1 = -(self.a * self.value + self.b)
@@ -144,22 +143,22 @@ class SpeedMeter(Widget):
     def _draw_shadow(self):
         self._shadowIG.clear()
         self._shadow = None
-        if not self.shadowColor: return
+        if not self.shadow_color: return
         add = self._shadowIG.add
-        add(Color(rgba=get_color_from_hex(self.shadowColor)))
+        add(Color(rgba=get_color_from_hex(self.shadow_color)))
         self._shadow = Line(width=5, cap='none')
         add(self._shadow)
-        self._setShadowValue()
+        self._set_shadow_value()
 
-    def _draw_outerCadran(self):
+    def _draw_outer_cadran(self):
         self._outerCadranIG.clear()
         add = self._outerCadranIG.add
         centerx = self.centerx
         centery = self.centery
         r = self.r
-        theta0 = self.startAngle
-        theta1 = self.endAngle
-        add(Color(rgba=get_color_from_hex(self.cadranColor)))
+        theta0 = self.start_angle
+        theta1 = self.end_angle
+        add(Color(rgba=get_color_from_hex(self.cadran_color)))
         if theta0 == theta1:
             add(Line(circle=(centerx, centery, r), width=1.5))
         else:
@@ -183,16 +182,16 @@ class SpeedMeter(Widget):
         centerx = self.centerx
         centery = self.centery
         r = self.r
-        valueStr = self.valueStr
-        values = [Label(valueStr(i), bold=True, font_size=self.valueFontSize)
+        value_str = self.value_str
+        values = [Label(value_str(i), bold=True, font_size=self.value_font_size)
                       for i in range(self.min, self.max + 1, self.tick)]
         if len(values) <= 1:
             # Tick is bigger than max - min
             return
         for _ in values: _.refresh()
 
-        theta0 = self.startAngle
-        theta1 = self.endAngle
+        theta0 = self.start_angle
+        theta1 = self.end_angle
         if theta0 == theta1:
             theta1 += 360
         deltaTheta = radians((theta1 - theta0) / float(len(values) - 1))
@@ -211,7 +210,7 @@ class SpeedMeter(Widget):
             c = cos(theta)
             s = sin(theta)
             r_1 = r - 1
-            if not first and not last or first and self.displayFirst or last and self.displayLast:
+            if not first and not last or first and self.display_first or last and self.display_last:
                 # Draw the big tick
                 add(Line(points=(
                     centerx + r_1 * s, centery + r_1 * c,
@@ -240,24 +239,24 @@ class SpeedMeter(Widget):
 
     def _draw_label(self, *t):
         self._labelIG.clear()
-        if not self.label and not self.labelIcon:
+        if not self.label and not self.label_icon:
             return
 
-        theta = self.startAngle + self.labelAngleRatio * (self.endAngle - self.startAngle)
+        theta = self.start_angle + self.label_angle_ratio * (self.end_angle - self.start_angle)
         c = cos(radians(theta))
         s = sin(radians(theta))
         r = self.r
-        r1 = r * self.labelRadiusRatio
-        if self.labelIcon:
-            label = CoreImage(self.labelIcon)
+        r1 = r * self.label_radius_ratio
+        if self.label_icon:
+            label = CoreImage(self.label_icon)
             t = label.texture
             iconSize = max(t.size)
-            scale = r * self.labelIconScale / float(iconSize)
+            scale = r * self.label_icon_scale / float(iconSize)
             tw, th = t.size
             tw *= scale
             th *= scale
         else:
-            label = Label(text=self.label, markup=True, bold=True, font_size=self.labelFontSize)
+            label = Label(text=self.label, markup=True, bold=True, font_size=self.label_font_size)
             label.refresh()
             t = label.texture
             tw, th = t.size
@@ -277,9 +276,9 @@ class SpeedMeter(Widget):
         elif self.value > self.max: self.value = self.max
         needleSize = self.r
         s = needleSize * 2
-        add(Color(rgba=get_color_from_hex(self.needleColor)))
+        add(Color(rgba=get_color_from_hex(self.needle_color)))
         add(Rectangle(pos=(self.centerx - needleSize, self.centery - needleSize), size=(s, s),
-                      source=self.needleImage))
+                      source=self.needle_image))
         add(PopMatrix())
         self.on_value()
         
@@ -287,14 +286,14 @@ class SpeedMeter(Widget):
         self._draw_sectors()
         self._draw_shadow()
 
-    def _draw_fullCadran(self, *t):
-        self._draw_outerCadran()
+    def _draw_full_cadran(self, *t):
+        self._draw_outer_cadran()
         self._draw_values()
 
     def _redraw(self, *args):
         diameter = min(self.size)
-        sa = self.startAngle
-        ea = self.endAngle
+        sa = self.start_angle
+        ea = self.end_angle
         
         r = self.r = diameter / 2
         self.r2 = r * r
@@ -328,15 +327,15 @@ class SpeedMeter(Widget):
         # Draw
         #
         self._draw_background()
-        self._draw_fullCadran()
+        self._draw_full_cadran()
         self._draw_label()
         self._draw_needle()
             
     def on_value(self, *t):
         self.rotate.angle = self.a * self.value + self.b
-        self._setShadowValue()
+        self._set_shadow_value()
 
-    def getValue(self, pos):
+    def get_value(self, pos):
         c = self.center
         x = pos[0] - c[0]
         y = pos[1] - c[1]
@@ -355,16 +354,16 @@ class SpeedMeter(Widget):
         # Should make distinction between min and max here
         
     def collide_point(self, x, y):
-        return self.getValue(*(x, y)) is not None
+        return self.get_value(*(x, y)) is not None
 
-    def on_startAngle(self, *t):
-        if self.endAngle - self.startAngle > 360:
-            self.startAngle = self.endAngle - 360
+    def on_start_angle(self, *t):
+        if self.end_angle - self.start_angle > 360:
+            self.start_angle = self.end_angle - 360
         self._redraw()
 
-    def on_endAngle(self, *t):
-        if self.endAngle - self.startAngle > 360:
-            self.endAngle = self.startAngle + 360
+    def on_end_angle(self, *t):
+        if self.end_angle - self.start_angle > 360:
+            self.end_angle = self.start_angle + 360
         self._redraw()
 
 class _X: pass
